@@ -12,3 +12,9 @@ class TabularQFunction:
 
     def act(self, state):
         return np.argmax(self.q[state])
+
+    def update(self, state, action, reward, new_state, learning_rate):
+        new_q = reward + np.amax(self.q[new_state])
+
+        self.q[state,action] =\
+         (1-learning_rate)*self.q[state,action]+learning_rate*new_q
