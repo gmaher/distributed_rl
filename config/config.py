@@ -13,10 +13,11 @@ dataDir = srcDir+'/data'
 # Simulation Inputs
 #######################################################
 BATCH_SIZE    = 16
-NUM_EPISODES  = 30000
-NUM_STEPS     = 100
+NUM_EPISODES  = 60000
+NUM_STEPS     = 30
 LEARNING_RATE = 1e-2
 RENDER_FREQUENCY = 100
+RENDER = False
 
 EPS_START = 1.0
 EPS_MIN   = 0.05

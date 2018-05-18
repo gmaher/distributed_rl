@@ -33,7 +33,7 @@ for ep in range(config.NUM_EPISODES):
     s = env.reset()
 
     for t in range(config.NUM_STEPS):
-        if ep%config.RENDER_FREQUENCY == 0:
+        if (ep%config.RENDER_FREQUENCY == 0) and config.RENDER:
             env.render()
 
         a = agent.act(s)
@@ -47,7 +47,9 @@ for ep in range(config.NUM_EPISODES):
         s = ss
 
         if done:
-            print ("episode {}: final state {}, reward {}".format(ep, s, r))
             break
+
+    print ("episode {}: final state {}, reward {}".format(ep, s, r))
+
 
     explorer.update()
