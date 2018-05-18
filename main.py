@@ -28,3 +28,26 @@ explorer = EpsGreedy(num_actions=env_input['NUM_ACTIONS'],
 agent = TabularQFunction(state_size=env_input['STATE_SIZE'][0],
     num_actions=env_input['NUM_ACTIONS'],
     mu_init=config.Q_INIT, std_init=config.Q_STD)
+
+for ep in range(config.NUM_EPISODES):
+    s = env.reset()
+
+    for t in range(config.NUM_STEPS):
+        if ep%config.RENDER_FREQUENCY == 0:
+            env.render()
+
+        a = agent.act(s)
+
+        a = explorer.explore(a)
+
+        ss,r,done,info = env.step(a)
+
+        agent.update(s, a, r, ss, config.LEARNING_RATE)
+
+        s = ss
+
+        if done:
+            print ("episode {}: final state {}, reward {}".format(ep, s, r))
+            break
+
+    explorer.update()
