@@ -43,12 +43,6 @@ class ActorThread(threading.Thread):
 
                 self.replay_buffer.add((s,a,r,ss,done))
 
-                if len(self.replay_buffer.tuples) > 1:
-                    tup = self.replay_buffer.get(batch_size=1)
-
-                    self.agent.update(tup[0][0], tup[1][0], tup[2][0],
-                        tup[3][0], self.config.LEARNING_RATE)
-
                 s = ss
 
                 if done:

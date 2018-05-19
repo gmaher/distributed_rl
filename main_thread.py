@@ -7,6 +7,7 @@ from src.exploration import EpsGreedy
 from src.agent import TabularQFunction
 from src.replay_buffer import ReplayBuffer
 from src.actor import ActorThread
+from src.learner import LearnerThread
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-env', type=str)
@@ -36,3 +37,6 @@ replay = ReplayBuffer()
 
 actor  = ActorThread(agent, env, explorer, replay, config)
 actor.start()
+
+learner = LearnerThread(agent, replay, config)
+learner.start()
