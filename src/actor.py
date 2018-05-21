@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.DEBUG,
     format='(%(threadName)-9s) %(message)s',)
 
 class ActorThread(threading.Thread):
-    def __init__(self, agent, env, explorer, replay_buffer, config, group=None, target=None, name="actor", args=(), kwargs=None, verbose=None):
+    def __init__(self, agent, env, explorer, replay_buffer, writer, config, group=None, target=None, name="actor", args=(), kwargs=None, verbose=None):
         super(ActorThread,self).__init__()
 
         self.group  = group
@@ -19,13 +19,17 @@ class ActorThread(threading.Thread):
         self.env           = env
         self.explorer      = explorer
         self.replay_buffer = replay_buffer
+        self.writer        = writer
         self.config        = config
         #self.setDaemon(True)
 
     def run(self):
-        count = 0
+        count = -1
         while True:
             count+=1
+
+            if count%self.config.WRITE_FREQUENCY == 0:
+                self.writer.make_episode_dir(count)
 
             s = self.env.reset()
 
@@ -42,6 +46,9 @@ class ActorThread(threading.Thread):
                 ss,r,done,info = self.env.step(a)
 
                 self.replay_buffer.add((s,a,r,ss,done))
+
+                if count%self.config.WRITE_FREQUENCY == 0:
+                    self.writer.write(count, t, s, a, r, ss, done)
 
                 s = ss
 

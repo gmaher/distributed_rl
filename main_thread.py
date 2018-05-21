@@ -8,6 +8,7 @@ from src.agent import TabularQFunction
 from src.replay_buffer import ReplayBuffer
 from src.actor import ActorThread
 from src.learner import LearnerThread
+from src.writer import EpisodeWriter
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-env', type=str)
@@ -35,7 +36,11 @@ agent = TabularQFunction(state_size=env_input['STATE_SIZE'][0],
 
 replay = ReplayBuffer()
 
-actor  = ActorThread(agent, env, explorer, replay, config)
+writer = EpisodeWriter(config.resultsDir+'/'+env_input['ENV_NAME'],
+    env_input['ENV_NAME'])
+
+actor  = ActorThread(agent, env, explorer, replay,
+    writer, config)
 actor.start()
 
 learner = LearnerThread(agent, replay, config)
