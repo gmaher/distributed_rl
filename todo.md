@@ -5,8 +5,8 @@
 1. <s>Create Data Format for Storing episodes</s>
 2. <s>Write episode saver</s>
 3. <s>Connect episode Saver to Actor</s>
-4. Write code to read episodes
-5. Make Ipython Notebook to Plot Episodes
+4. <s>Write code to read episodes</s>
+5. <s>Make Ipython Notebook to Plot Episodes</s>
 
 #### Distributed communication
 

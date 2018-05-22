@@ -25,7 +25,7 @@ class ActorThread(threading.Thread):
 
     def run(self):
         count = -1
-        while True:
+        for i in range(self.config.NUM_EPISODES):
             count+=1
 
             if count%self.config.WRITE_FREQUENCY == 0:
