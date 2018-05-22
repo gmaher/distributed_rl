@@ -1,7 +1,7 @@
 import numpy as np
 
 class ReplayBuffer:
-    def __init__(self, max_size=1000000):
+    def __init__(self, max_size=10000):
         self.tuples = []
         self.max_size = max_size
         self.index = 0

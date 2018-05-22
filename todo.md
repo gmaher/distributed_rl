@@ -2,9 +2,9 @@
 
 #### Logging/Plotting
 
-1. Create Data Format for Storing episodes
-2. Write episode saver
-3. Connect episode Saver to Actor
+1. <s>Create Data Format for Storing episodes</s>
+2. <s>Write episode saver</s>
+3. <s>Connect episode Saver to Actor</s>
 4. Write code to read episodes
 5. Make Ipython Notebook to Plot Episodes
 
@@ -24,6 +24,7 @@
 #### Replicate Silver Paper
 
 1. Implement DQN agent
+2. Implement multi-actor, single learner
 
 #### Thomspon Sampling
 

@@ -55,10 +55,11 @@ class ActorThread(threading.Thread):
                 if done:
                     break
 
-            logging.debug("episode {}: final state {}, reward {}".format(count, s, r))
+            if count%self.config.PRINT_FREQUENCY == 0:
+                logging.debug("episode {}: final state {}, reward {}".format(count, s, r))
 
             self.explorer.update()
 
-            time.sleep(random.random())
+            time.sleep(random.random()*self.config.SLEEP_TIME)
 
         return

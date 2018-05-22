@@ -31,8 +31,9 @@ class LearnerThread(threading.Thread):
                 self.agent.update(tup[0][0], tup[1][0], tup[2][0],
                     tup[3][0], self.config.LEARNING_RATE)
 
-            logging.debug("training iteration {}".format(count))
+            if count%self.config.PRINT_FREQUENCY == 0:
+                logging.debug("training iteration {}".format(count))
 
-            time.sleep(random.random())
+            time.sleep(random.random()*self.config.SLEEP_TIME)
 
         return
