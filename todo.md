@@ -18,8 +18,8 @@
 
 #### Testing/Debugging
 
-1. Test and confirm convergence of tabular Q on Frozen lake
-2. Test and confirm convergence of tabular Q on Nchain
+1. <s>Test and confirm convergence of tabular Q on Frozen lake</s>
+2. <s>Test and confirm convergence of tabular Q on Nchain</s>
 
 #### Replicate Silver Paper
 
