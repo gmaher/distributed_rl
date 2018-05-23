@@ -34,5 +34,7 @@
 
 #### Continuous Control
 
-1. Implement tabular preprocessor
-2. Implement Stochastic Network
+1. <s>Implement tabular preprocessor</s>
+2. <s>Make agent factory</s>
+3. Connect tabular preprocessor + tabular Q to factory
+4. Implement Stochastic Network

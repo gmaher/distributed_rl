@@ -28,6 +28,3 @@ DISCOUNT = 0.99
 EPS_START = 0.5
 EPS_MIN   = 0.01
 DECAY     = 0.999
-
-Q_INIT    = 0.5,
-Q_STD     = 1e-2
