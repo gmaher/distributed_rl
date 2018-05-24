@@ -1,0 +1,6 @@
+{
+  "TYPE":"PreprocessedTableQFunction",
+  "Q_INIT":-1,
+  "Q_STD":1e-2,
+  "BINS":30
+}

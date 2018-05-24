@@ -5,12 +5,17 @@ class TablePreprocessor(object):
         self.ranges          = ranges
         self.state_dimension = ranges.shape[0]
         self.N               = N
-        self.num_states      = self.state_dimension**self.N
+        self.num_states      = self.N**self.state_dimension
 
     def preprocess(self, s):
         binned = (1.0*s-self.ranges[:,0])/(self.ranges[:,1]-self.ranges[:,0])
         binned = binned*self.N
         binned = np.ceil(binned).astype(int)-(binned>0).astype(int)
+        for i in range(self.state_dimension):
+            if binned[i] > self.N-1:
+                binned[i] = self.N-1
+            if binned[i] < 0:
+                binned[i] = 0
 
         n = 0
         for i in range(self.state_dimension):

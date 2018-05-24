@@ -1,0 +1,10 @@
+{
+  "PROVIDER":"GYM",
+  "ENV_NAME":"CartPole-v0",
+  "STATE_RANGES":[[-3,3],
+    [-3,3],
+    [-0.3,0.3],
+    [-3,3]
+],
+  "NUM_ACTIONS":2
+}
