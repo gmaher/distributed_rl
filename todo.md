@@ -20,6 +20,8 @@
 
 1. <s>Test and confirm convergence of tabular Q on Frozen lake</s>
 2. <s>Test and confirm convergence of tabular Q on Nchain</s>
+3. <s>Test and confirm convergence of preprocessed Q on cartpole</s>
+4. Test and confirm convergence of continuous Q on pendulum
 
 #### Replicate Silver Paper
 
@@ -36,5 +38,6 @@
 
 1. <s>Implement tabular preprocessor</s>
 2. <s>Make agent factory</s>
-3. Connect tabular preprocessor + tabular Q to factory
+3. <s>Connect tabular preprocessor + tabular Q to factory</s>
+4. Implement Q table with continuous actions
 4. Implement Stochastic Network
