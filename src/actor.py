@@ -8,19 +8,23 @@ logging.basicConfig(level=logging.DEBUG,
     format='(%(threadName)-9s) %(message)s',)
 
 class ActorThread(threading.Thread):
-    def __init__(self, agent, env, explorer, replay_buffer, writer, config, group=None, target=None, name="actor", args=(), kwargs=None, verbose=None):
+    def __init__(self, agent, env, replay_buffer, parameter_server,
+        writer, config, explorer=None, group=None, target=None, name="actor",
+        args=(), kwargs=None, verbose=None):
+
         super(ActorThread,self).__init__()
 
         self.group  = group
         self.target = target
         self.name   = name
 
-        self.agent         = agent
-        self.env           = env
-        self.explorer      = explorer
-        self.replay_buffer = replay_buffer
-        self.writer        = writer
-        self.config        = config
+        self.agent            = agent
+        self.env              = env
+        self.explorer         = explorer
+        self.replay_buffer    = replay_buffer
+        self.parameter_server = parameter_server
+        self.writer           = writer
+        self.config           = config
         #self.setDaemon(True)
 
     def run(self):
@@ -39,10 +43,11 @@ class ActorThread(threading.Thread):
                 and self.config.RENDER:
                     self.env.render()
                     time.sleep(1.0/60)
-                    
+
                 a = self.agent.act(s)
 
-                a = self.explorer.explore(a)
+                if not self.explorer == None:
+                    a = self.explorer.explore(a)
 
                 ss,r,done,info = self.env.step(a)
 
@@ -58,8 +63,14 @@ class ActorThread(threading.Thread):
 
             if count%self.config.PRINT_FREQUENCY == 0:
                 logging.debug("episode {}: final state {}, reward {}".format(count, s, r))
+                logging.debug(self.agent.q)
 
-            self.explorer.update()
+            if not self.explorer == None:
+                self.explorer.update()
+
+            new_params = self.parameter_server.getParams()
+
+            self.agent.setParams(new_params)
 
             time.sleep(random.random()*self.config.SLEEP_TIME)
 

@@ -9,6 +9,7 @@ from src.replay_buffer import ReplayBuffer
 from src.actor import ActorThread
 from src.learner import LearnerThread
 from src.writer import EpisodeWriter
+from src.parameter_server import ParameterServer
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-env', type=str)
@@ -27,20 +28,26 @@ agent_input = read_json(args.agent)
 #######################################
 env = get_environment(env_input)
 
-explorer = EpsGreedy(num_actions=env_input['NUM_ACTIONS'],
-    eps=config.EPS_START, eps_min=config.EPS_MIN,
-        decay=config.DECAY)
+# explorer = EpsGreedy(num_actions=env_input['NUM_ACTIONS'],
+#     eps=config.EPS_START, eps_min=config.EPS_MIN,
+#         decay=config.DECAY)
 
-agent = get_agent(agent_input, env_input)
+explorer = None
+
+actor_agent = get_agent(agent_input, env_input)
+print(actor_agent.q)
+learner_agent = get_agent(agent_input, env_input)
+
+parameter_server = ParameterServer(learner_agent)
 
 replay = ReplayBuffer()
 
 writer = EpisodeWriter(config.resultsDir+'/'+env_input['ENV_NAME'],
     env_input['ENV_NAME'])
 
-actor  = ActorThread(agent, env, explorer, replay,
-    writer, config)
+actor  = ActorThread(actor_agent, env, replay, parameter_server,
+    writer, config, explorer)
 actor.start()
 
-learner = LearnerThread(agent, replay, config)
+learner = LearnerThread(learner_agent, replay, config)
 learner.start()

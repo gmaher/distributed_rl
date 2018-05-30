@@ -1,0 +1,7 @@
+{
+  "TYPE":"ThompsonPreprocessedQFunction",
+  "Q_INIT":-0.5,
+  "Q_STD":1e-2,
+  "BINS":30,
+  "STD_EXPLORE":0.5
+}
