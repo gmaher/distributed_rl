@@ -11,7 +11,7 @@ def write_json(fn,data):
 
 def sma(x,n=100):
     s = np.zeros((len(x)))
-    for i in range(n):
+    for i in range(1,n):
         s[i] = np.mean(x[:i])
 
     for i in range(n,len(x)):

@@ -33,11 +33,24 @@ class ThompsonTabularQFunction(TabularQFunction):
         super(ThompsonTabularQFunction,self).__init__(state_size, num_actions,
             mu_init=mu_init, std_init=std_init)
 
-        self.std_explore = std_explore
+        self.std_explore = np.ones(self.q.shape)*std_explore
+
+    def update(self, state, action, reward, new_state, learning_rate, discount):
+        new_q = reward + discount*np.max(self.q[new_state])
+        new_a = np.argmax(self.q[new_state])
+
+        self.std_explore[state,action] =\
+         (1-learning_rate)*self.std_explore[state,action]+\
+            learning_rate*(new_q-self.q[new_state, new_a])**2
+
+
+        self.q[state,action] =\
+         (1-learning_rate)*self.q[state,action]+learning_rate*new_q
+
 
     def sampleParams(self):
         s = self.q.shape
-        return self.q.copy() + self.std_explore*np.random.randn(*s)
+        return self.q.copy() + np.sqrt(self.std_explore)*np.random.randn(*s)
 
 class PreprocessedTableQFunction:
     def __init__(self, preprocessor, num_actions, mu_init, std_init):

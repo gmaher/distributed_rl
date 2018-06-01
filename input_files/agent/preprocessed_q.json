@@ -2,5 +2,6 @@
   "TYPE":"PreprocessedTableQFunction",
   "Q_INIT":-0.5,
   "Q_STD":1e-2,
-  "BINS":30
+  "BINS":30,
+  "EXPLORER":"EPS_GREEDY"
 }

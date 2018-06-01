@@ -28,14 +28,17 @@ agent_input = read_json(args.agent)
 #######################################
 env = get_environment(env_input)
 
-# explorer = EpsGreedy(num_actions=env_input['NUM_ACTIONS'],
-#     eps=config.EPS_START, eps_min=config.EPS_MIN,
-#         decay=config.DECAY)
+if "EXPLORER" in agent_input and agent_input['EXPLORER'] == 'EPS_GREEDY':
 
-explorer = None
+    explorer = EpsGreedy(num_actions=env_input['NUM_ACTIONS'],
+        eps=config.EPS_START, eps_min=config.EPS_MIN,
+            decay=config.DECAY)
+
+else:
+    explorer = None
 
 actor_agent = get_agent(agent_input, env_input)
-print(actor_agent.q)
+
 learner_agent = get_agent(agent_input, env_input)
 
 parameter_server = ParameterServer(learner_agent)

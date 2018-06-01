@@ -2,5 +2,5 @@
   "TYPE":"ThompsonTabularQFunction",
   "Q_INIT":0.0,
   "Q_STD":1e-2,
-  "STD_EXPLORE":0.05
+  "STD_EXPLORE":1
 }

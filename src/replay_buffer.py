@@ -1,15 +1,15 @@
 import numpy as np
 
 class ReplayBuffer:
-    def __init__(self, max_size=100000):
+    def __init__(self, max_size=10000):
         self.tuples = []
         self.max_size = max_size
         self.index = 0
 
     def add(self, tup):
         if self.index >= self.max_size:
-            self.index = np.random.randint(self.max_size)
-            self.tuples[self.index] = tup
+            index = np.random.randint(self.max_size)
+            self.tuples[index] = tup
         else:
             self.tuples.append(tup)
             self.index += 1
