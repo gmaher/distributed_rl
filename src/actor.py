@@ -42,7 +42,7 @@ class ActorThread(threading.Thread):
                 if (count%self.config.RENDER_FREQUENCY == 0)\
                 and self.config.RENDER:
                     self.env.render()
-                    time.sleep(1.0/20)
+                    time.sleep(1.0/30)
 
                 a = self.agent.act(s)
 

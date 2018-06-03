@@ -87,7 +87,21 @@ class ThompsonPreprocessedQFunction(PreprocessedTableQFunction):
         super(ThompsonPreprocessedQFunction,self).__init__(preprocessor, num_actions,
             mu_init=10, std_init=1e-2)
 
-        self.std_explore = std_explore
+        self.std_explore = np.ones(self.q.shape)*std_explore
+
+    def update(self, state, action, reward, new_state, learning_rate, discount):
+        index_s = self.preprocessor.preprocess(state)
+        index_ss = self.preprocessor.preprocess(new_state)
+
+        new_q = reward + discount*np.max(self.q[index_ss])
+        new_a = np.argmax(self.q[index_ss])
+
+        self.std_explore[index_s,action] =\
+         (1-learning_rate)*self.std_explore[index_s,action]+\
+            learning_rate*(new_q-self.q[index_ss, new_a])**2
+
+        self.q[index_s,action] =\
+         (1-learning_rate)*self.q[index_s,action]+learning_rate*new_q
 
     def sampleParams(self):
         s = self.q.shape
