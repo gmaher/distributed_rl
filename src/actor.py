@@ -42,7 +42,7 @@ class ActorThread(threading.Thread):
                 if (count%self.config.RENDER_FREQUENCY == 0)\
                 and self.config.RENDER:
                     self.env.render()
-                    time.sleep(1.0/60)
+                    time.sleep(1.0/20)
 
                 a = self.agent.act(s)
 
@@ -59,12 +59,14 @@ class ActorThread(threading.Thread):
                 s = ss
 
                 if done:
+                    a = self.agent.act(ss)
+                    self.replay_buffer.add((ss,a,r,ss,done))
                     break
 
             if count%self.config.PRINT_FREQUENCY == 0:
                 logging.debug("episode {}: final state {}, reward {}".format(count, s, r))
                 logging.debug(self.agent.q)
-                
+
             if not self.explorer == None:
                 self.explorer.update()
 

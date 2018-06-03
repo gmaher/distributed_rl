@@ -34,6 +34,7 @@ class LearnerThread(threading.Thread):
 
             if count%self.config.PRINT_FREQUENCY == 0:
                 logging.debug("training iteration {}".format(count))
+                logging.debug(np.sqrt(self.agent.std_explore))
 
             time.sleep(random.random()*self.config.SLEEP_TIME_LEARNER)
 

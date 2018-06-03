@@ -14,13 +14,13 @@ resultsDir = srcDir+'/results'
 # Simulation Inputs
 #######################################################
 BATCH_SIZE    = 16
-NUM_EPISODES  = 30000
+NUM_EPISODES  = 100000
 NUM_STEPS     = 50
-LEARNING_RATE = 1e-2
+LEARNING_RATE = 1e-1
 RENDER_FREQUENCY = 1000
 PRINT_FREQUENCY  = 1000
 RENDER = True
-WRITE_FREQUENCY = 1
+WRITE_FREQUENCY = 10
 SLEEP_TIME      = 0.001
 SLEEP_TIME_LEARNER      = 0.001
 DISCOUNT = 0.99
