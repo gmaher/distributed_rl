@@ -14,7 +14,7 @@ from src.parameter_server import ParameterServer
 parser = argparse.ArgumentParser()
 parser.add_argument('-env', type=str)
 parser.add_argument('-agent', type=str)
-
+parser.add_argument('--n_agents', type=int, default=1)
 args = parser.parse_args()
 
 #######################################
@@ -37,20 +37,23 @@ if "EXPLORER" in agent_input and agent_input['EXPLORER'] == 'EPS_GREEDY':
 else:
     explorer = None
 
-actor_agent = get_agent(agent_input, env_input)
-
 learner_agent = get_agent(agent_input, env_input)
 
 parameter_server = ParameterServer(learner_agent)
 
 replay = ReplayBuffer()
 
-writer = EpisodeWriter(config.resultsDir+'/'+env_input['ENV_NAME'],
-    env_input['ENV_NAME'])
+for i in range(args.n_agents):
+    id_ = str(i)
 
-actor  = ActorThread(actor_agent, env, replay, parameter_server,
-    writer, config, explorer)
-actor.start()
+    actor_agent = get_agent(agent_input, env_input)
+
+    writer = EpisodeWriter(config.resultsDir, env_name=env_input['ENV_NAME'],
+        agent_name=agent_input["TYPE"], id_=id_)
+
+    actor  = ActorThread(actor_agent, env, replay, parameter_server,
+        writer, config, explorer, name=id_)
+    actor.start()
 
 learner = LearnerThread(learner_agent, replay, config)
 learner.start()

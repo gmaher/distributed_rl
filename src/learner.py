@@ -33,7 +33,9 @@ class LearnerThread(threading.Thread):
                     a = tuples[1][i]
                     r = tuples[2][i]
                     ss = tuples[3][i]
-                    self.agent.update(s,a,r,ss, self.config.LEARNING_RATE,
+                    done = tuples[4][i]
+
+                    self.agent.update(s,a,r,ss, done, self.config.LEARNING_RATE,
                             self.config.DISCOUNT)
 
             if count%self.config.PRINT_FREQUENCY == 0:

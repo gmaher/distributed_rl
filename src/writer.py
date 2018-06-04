@@ -20,14 +20,28 @@ def convert(x):
 
     return x
 class EpisodeWriter(object):
-    def __init__(self, top_dir, id_):
-        self.top_dir = top_dir
-        self.id      = id_
+    def __init__(self, top_dir, env_name, agent_name, id_):
+        self.top_dir       = top_dir
+        self.env_name      = env_name
+        self.agent_name    = agent_name
+
+        self.output_dir = self.top_dir+'/'+env_name+'/'+agent_name
         if not os.path.isdir(self.top_dir):
             os.mkdir(self.top_dir)
 
+        if not os.path.isdir(self.top_dir+'/'+env_name):
+            os.mkdir(self.top_dir+'/'+env_name)
+
+        if not os.path.isdir(self.output_dir):
+            os.mkdir(self.output_dir)
+
+        self.output_dir = self.output_dir+'/'+id_
+
+        if not os.path.isdir(self.output_dir):
+            os.mkdir(self.output_dir)
+            
     def make_episode_dir(self, episode_id):
-        d = "{}/{}".format(self.top_dir,episode_id)
+        d = "{}/{}".format(self.output_dir,episode_id)
         if not os.path.isdir(d):
             os.mkdir(d)
 
@@ -45,6 +59,6 @@ class EpisodeWriter(object):
             "done":done,
             "timestamp":str(datetime.datetime.now())}
 
-        fn = "{}/{}/{}.json".format(self.top_dir,episode_id,step)
+        fn = "{}/{}/{}.json".format(self.output_dir,episode_id,step)
 
         write_json(fn,data)

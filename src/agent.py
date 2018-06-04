@@ -14,8 +14,8 @@ class TabularQFunction:
     def act(self, state):
         return np.argmax(self.q[state])
 
-    def update(self, state, action, reward, new_state, learning_rate, discount):
-        new_q = reward + discount*np.max(self.q[new_state])
+    def update(self, state, action, reward, new_state, done, learning_rate, discount):
+        new_q = reward + int(not done)*discount*np.max(self.q[new_state])
 
         self.q[state,action] =\
          (1-learning_rate)*self.q[state,action]+learning_rate*new_q
@@ -35,14 +35,12 @@ class ThompsonTabularQFunction(TabularQFunction):
 
         self.std_explore = np.ones(self.q.shape)*std_explore
 
-    def update(self, state, action, reward, new_state, learning_rate, discount):
-        new_q = reward + discount*np.max(self.q[new_state])
-        new_a = np.argmax(self.q[new_state])
+    def update(self, state, action, reward, new_state, done, learning_rate, discount):
+        new_q = reward + int(not done)*discount*np.max(self.q[new_state])
 
         self.std_explore[state,action] =\
          (1-learning_rate)*self.std_explore[state,action]+\
-            learning_rate*(new_q-self.q[new_state, new_a])**2
-
+            learning_rate*(new_q-self.q[state, action])**2
 
         self.q[state,action] =\
          (1-learning_rate)*self.q[state,action]+learning_rate*new_q
@@ -65,11 +63,11 @@ class PreprocessedTableQFunction:
         index  = self.preprocessor.preprocess(state)
         return np.argmax(self.q[index,:])
 
-    def update(self, state, action, reward, new_state, learning_rate, discount):
+    def update(self, state, action, reward, new_state, done, learning_rate, discount):
         index_s = self.preprocessor.preprocess(state)
         index_ss = self.preprocessor.preprocess(new_state)
 
-        new_q = reward + discount*np.max(self.q[index_ss])
+        new_q = reward + int(not done)*discount*np.max(self.q[index_ss])
 
         self.q[index_s,action] =\
          (1-learning_rate)*self.q[index_s,action]+learning_rate*new_q
@@ -85,24 +83,23 @@ class ThompsonPreprocessedQFunction(PreprocessedTableQFunction):
         mu_init=10, std_init=1e-2, std_explore=0.5):
 
         super(ThompsonPreprocessedQFunction,self).__init__(preprocessor, num_actions,
-            mu_init=10, std_init=1e-2)
+            mu_init=mu_init, std_init=std_init)
 
         self.std_explore = np.ones(self.q.shape)*std_explore
 
-    def update(self, state, action, reward, new_state, learning_rate, discount):
+    def update(self, state, action, reward, new_state, done, learning_rate, discount):
         index_s = self.preprocessor.preprocess(state)
         index_ss = self.preprocessor.preprocess(new_state)
 
-        new_q = reward + discount*np.max(self.q[index_ss])
-        new_a = np.argmax(self.q[index_ss])
+        new_q = reward + int(not done)*discount*np.max(self.q[index_ss])
 
         self.std_explore[index_s,action] =\
          (1-learning_rate)*self.std_explore[index_s,action]+\
-            learning_rate*(new_q-self.q[index_ss, new_a])**2
+            learning_rate*(new_q-self.q[index_s, action])**2
 
         self.q[index_s,action] =\
          (1-learning_rate)*self.q[index_s,action]+learning_rate*new_q
 
     def sampleParams(self):
         s = self.q.shape
-        return self.q.copy() + self.std_explore*np.random.randn(*s)
+        return self.q.copy() + np.sqrt(self.std_explore)*np.random.randn(*s)
