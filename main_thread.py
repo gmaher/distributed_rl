@@ -55,5 +55,5 @@ for i in range(args.n_agents):
         writer, config, explorer, name=id_)
     actor.start()
 
-learner = LearnerThread(learner_agent, replay, config)
+learner = LearnerThread(learner_agent, replay, config, name="learner")
 learner.start()

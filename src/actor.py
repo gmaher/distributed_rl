@@ -65,7 +65,6 @@ class ActorThread(threading.Thread):
 
             if count%self.config.PRINT_FREQUENCY == 0:
                 logging.debug("episode {}: final state {}, reward {}".format(count, s, r))
-                logging.debug(self.agent.q)
 
             if not self.explorer == None:
                 self.explorer.update()
