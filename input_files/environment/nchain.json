@@ -2,10 +2,5 @@
   "PROVIDER":"GYM",
   "ENV_NAME":"NChain-v0",
   "STATE_SIZE":[5],
-  "NUM_ACTIONS":2,
-
-  "ENV_PARAMS":{
-    "map_name":"4x4",
-    "is_slippery":true
-  }
+  "NUM_ACTIONS":2
 }

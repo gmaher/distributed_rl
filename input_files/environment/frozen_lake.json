@@ -6,6 +6,6 @@
 
   "ENV_PARAMS":{
     "map_name":"4x4",
-    "is_slippery":false
+    "is_slippery":true
   }
 }

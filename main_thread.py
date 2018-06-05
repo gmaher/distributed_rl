@@ -38,10 +38,10 @@ else:
     explorer = None
 
 learner_agent = get_agent(agent_input, env_input)
-
+print(learner_agent.q)
 parameter_server = ParameterServer(learner_agent)
 
-replay = ReplayBuffer()
+replay = ReplayBuffer(max_size=config.REPLAY_SIZE)
 
 for i in range(args.n_agents):
     id_ = str(i)

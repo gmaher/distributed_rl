@@ -38,9 +38,12 @@ class ThompsonTabularQFunction(TabularQFunction):
     def update(self, state, action, reward, new_state, done, learning_rate, discount):
         new_q = reward + int(not done)*discount*np.max(self.q[new_state])
 
+        # self.std_explore[state,action] =\
+        #  (1-learning_rate)*self.std_explore[state,action]+\
+        #     learning_rate*(new_q-self.q[state, action])**2
+
         self.std_explore[state,action] =\
-         (1-learning_rate)*self.std_explore[state,action]+\
-            learning_rate*(new_q-self.q[state, action])**2
+         (1-learning_rate)*self.std_explore[state,action]
 
         self.q[state,action] =\
          (1-learning_rate)*self.q[state,action]+learning_rate*new_q
@@ -48,7 +51,7 @@ class ThompsonTabularQFunction(TabularQFunction):
 
     def sampleParams(self):
         s = self.q.shape
-        return self.q.copy() + np.sqrt(self.std_explore)*np.random.randn(*s)
+        return self.q.copy() + self.std_explore*np.random.randn(*s)
 
 class PreprocessedTableQFunction:
     def __init__(self, preprocessor, num_actions, mu_init, std_init):
@@ -93,13 +96,16 @@ class ThompsonPreprocessedQFunction(PreprocessedTableQFunction):
 
         new_q = reward + int(not done)*discount*np.max(self.q[index_ss])
 
+        # self.std_explore[index_s,action] =\
+        #  (1-learning_rate)*self.std_explore[index_s,action]+\
+        #     learning_rate*(new_q-self.q[index_s, action])**2
+
         self.std_explore[index_s,action] =\
-         (1-learning_rate)*self.std_explore[index_s,action]+\
-            learning_rate*(new_q-self.q[index_s, action])**2
+         (1-learning_rate)*self.std_explore[index_s,action]
 
         self.q[index_s,action] =\
          (1-learning_rate)*self.q[index_s,action]+learning_rate*new_q
 
     def sampleParams(self):
         s = self.q.shape
-        return self.q.copy() + np.sqrt(self.std_explore)*np.random.randn(*s)
+        return self.q.copy() + self.std_explore*np.random.randn(*s)
