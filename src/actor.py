@@ -25,6 +25,7 @@ class ActorThread(threading.Thread):
         self.parameter_server = parameter_server
         self.writer           = writer
         self.config           = config
+        self.out_count        = 0
         #self.setDaemon(True)
 
     def run(self):
@@ -72,7 +73,7 @@ class ActorThread(threading.Thread):
             new_params = self.parameter_server.getParams()
 
             self.agent.setParams(new_params)
-
+            self.out_count = count
             time.sleep(random.random()*self.config.SLEEP_TIME)
 
         return

@@ -1,5 +1,5 @@
 import argparse
-
+import time
 from config import config
 from src.util import read_json
 from src.environment import get_environment
@@ -10,6 +10,7 @@ from src.actor import ActorThread
 from src.learner import LearnerThread
 from src.writer import EpisodeWriter
 from src.parameter_server import ParameterServer
+import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-env', type=str)
@@ -43,17 +44,27 @@ parameter_server = ParameterServer(learner_agent)
 
 replay = ReplayBuffer(max_size=config.REPLAY_SIZE)
 
+case_id = str(np.random.randint(10000000))
+print("Starting experiment {}".format(case_id))
 for i in range(args.n_agents):
     id_ = str(i)
 
     actor_agent = get_agent(agent_input, env_input)
 
     writer = EpisodeWriter(config.resultsDir, env_name=env_input['ENV_NAME'],
-        agent_name=agent_input["TYPE"], id_=id_)
+        agent_name=agent_input["TYPE"]+case_id, id_=id_)
 
     actor  = ActorThread(actor_agent, env, replay, parameter_server,
         writer, config, explorer, name=id_)
+    actor.daemon = True
+
     actor.start()
 
 learner = LearnerThread(learner_agent, replay, config, name="learner")
+learner.daemon = True
 learner.start()
+
+while True:
+    print("checking if done: {}".format(actor.out_count))
+    if actor.out_count >= config.NUM_EPISODES-1: exit()
+    time.sleep(10)
