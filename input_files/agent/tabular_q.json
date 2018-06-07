@@ -1,6 +1,6 @@
 {
   "TYPE":"TabularQFunction",
   "Q_INIT":0.0,
-  "Q_STD":0.0,
+  "Q_STD":1e-3,
   "EXPLORER":"EPS_GREEDY"
 }

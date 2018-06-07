@@ -27,8 +27,6 @@ agent_input = read_json(args.agent)
 #######################################
 # Set up simulation
 #######################################
-env = get_environment(env_input)
-
 if "EXPLORER" in agent_input and agent_input['EXPLORER'] == 'EPS_GREEDY':
 
     explorer = EpsGreedy(num_actions=env_input['NUM_ACTIONS'],
@@ -48,6 +46,8 @@ case_id = str(np.random.randint(10000000))
 print("Starting experiment {}".format(case_id))
 for i in range(args.n_agents):
     id_ = str(i)
+
+    env = get_environment(env_input)
 
     actor_agent = get_agent(agent_input, env_input)
 

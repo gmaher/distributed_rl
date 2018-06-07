@@ -15,12 +15,12 @@ resultsDir = srcDir+'/results'
 #######################################################
 BATCH_SIZE    = 4
 NUM_EPISODES  = 50000
-NUM_STEPS     = 100
+NUM_STEPS     = 30
 LEARNING_RATE = 1e-2
 RENDER_FREQUENCY = 2000
 PRINT_FREQUENCY  = 1000
 RENDER = False
-WRITE_FREQUENCY = 20
+WRITE_FREQUENCY = 10
 SLEEP_TIME      = 0.001
 SLEEP_TIME_LEARNER      = 0.001
 DISCOUNT = 0.99

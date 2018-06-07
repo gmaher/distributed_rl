@@ -5,7 +5,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-env', type=str)
 parser.add_argument('-agent', type=str)
 parser.add_argument('--n_agents', type=int, default=1)
-parser.add_argument('--trials', type=int, default=20)
+parser.add_argument('--trials', type=int, default=1)
 
 args = parser.parse_args()
 
