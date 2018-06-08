@@ -66,5 +66,7 @@ learner.start()
 
 while True:
     print("checking if done: {}".format(actor.out_count))
-    if actor.out_count >= config.NUM_EPISODES-1: exit()
+    if actor.out_count >= config.NUM_EPISODES-1:
+        time.sleep(10)
+        exit()
     time.sleep(10)
