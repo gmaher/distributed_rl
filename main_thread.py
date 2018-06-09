@@ -3,13 +3,10 @@ import time
 from config import config
 from src.util import read_json
 from src.environment import get_environment
-from src.exploration import EpsGreedy
-from src.agent_factory import get_agent
 from src.replay_buffer import ReplayBuffer
 from src.actor import ActorThread
 from src.learner import LearnerThread
 from src.writer import EpisodeWriter
-from src.parameter_server import ParameterServer
 import numpy as np
 import importlib
 
@@ -32,7 +29,7 @@ agent_input = read_json(args.agent)
 factory = importlib.import_module(args.factory)
 factory.setup(agent_input, env_input, config)
 
-learner = factory.get_learner()
+learner = factory.methods['get_learner']()
 
 replay = ReplayBuffer(max_size=config.REPLAY_SIZE)
 
@@ -44,7 +41,7 @@ for i in range(args.n_agents):
 
     env = get_environment(env_input)
 
-    agent = factory.get_agent()
+    agent = factory.methods['get_agent']()
 
     writer = EpisodeWriter(config.resultsDir, env_name=env_input['ENV_NAME'],
         agent_name=agent_input["TYPE"]+case_id, id_=id_)
@@ -52,9 +49,9 @@ for i in range(args.n_agents):
     actor_thread  = ActorThread(agent, env, replay,
         writer, config, name=id_)
 
-    actor.daemon = True
+    actor_thread.daemon = True
 
-    actor.start()
+    actor_thread.start()
 
 learner_thread = LearnerThread(learner, replay, config, name="learner")
 learner_thread.daemon = True

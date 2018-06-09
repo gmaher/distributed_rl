@@ -9,7 +9,7 @@ class Optimizer(object):
         pass
 
 class QLearning(Optimizer):
-    def __init__(self, mu_int, std_init, num_states, num_actions,
+    def __init__(self, mu_init, std_init, num_states, num_actions,
         learning_rate=1e-3, discount=0.99):
 
         self.num_state     = num_states
@@ -19,7 +19,7 @@ class QLearning(Optimizer):
         self.q = np.random.rand(num_states, num_actions)*std_init + mu_init
 
     def update(self, batch):
-        batch_size = len(batch)
+        batch_size = batch[0].shape[0]
 
         for i in range(batch_size):
             s     = batch[0][i]
@@ -28,7 +28,7 @@ class QLearning(Optimizer):
             ss    = batch[3][i]
             done  = batch[4][i]
 
-            new_q = reward + int(not done)*self.discount*np.max(self.q[ss])
+            new_q = r + int(not done)*self.discount*np.max(self.q[ss])
 
             self.q[s,a] =\
              (1-self.learning_rate)*self.q[s, a]+\

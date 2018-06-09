@@ -1,16 +1,15 @@
-from src.exploration import EpsilonGreedy
-from src.optimizer   import QLearning
-from src.model       import TabularQFunction
+from src.exploration      import EpsilonGreedy
+from src.optimizer        import QLearning
+from src.model            import TabularQFunction
 from src.parameter_server import ParameterServer
 
 ############################################
 # Setup
 ############################################
-global get_agent
-global get_learner
+methods = {}
 
 class EpsGreedyAgent(object):
-    def __init(self, model, explorer, param_server):
+    def __init__(self, model, explorer, param_server):
         self.model        = model
         self.explorer     = explorer
         self.param_server = param_server
@@ -27,7 +26,6 @@ class EpsGreedyAgent(object):
         return self.explorer.explore(a)
 
 def setup(agent_params, env_params, config):
-
     NUM_STATES  = env_params['STATE_SIZE' ][0]
     NUM_ACTIONS = env_params['NUM_ACTIONS']
 
@@ -37,7 +35,7 @@ def setup(agent_params, env_params, config):
 
     param_server = ParameterServer(q_learning)
 
-    def get_agent():
+    def agent():
         q_function = TabularQFunction( q_learning.get_params() )
 
         explorer   = EpsilonGreedy(NUM_ACTIONS, config.EPS_START, config.EPS_MIN,
@@ -45,5 +43,8 @@ def setup(agent_params, env_params, config):
 
         return EpsGreedyAgent(q_function, explorer, param_server)
 
-    def get_learner():
+    def learner():
         return q_learning
+
+    methods['get_agent']   = agent
+    methods['get_learner'] = learner

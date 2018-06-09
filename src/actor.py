@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.DEBUG,
     format='(%(threadName)-9s) %(message)s',)
 
 class ActorThread(threading.Thread):
-    def __init__(self, agent, env, replay_buffer, parameter_server,
+    def __init__(self, agent, env, replay_buffer,
         writer, config, explorer=None, group=None, target=None, name="actor",
         args=(), kwargs=None, verbose=None):
 
@@ -22,7 +22,6 @@ class ActorThread(threading.Thread):
         self.env              = env
         self.explorer         = explorer
         self.replay_buffer    = replay_buffer
-        self.parameter_server = parameter_server
         self.writer           = writer
         self.config           = config
         self.out_count        = 0
