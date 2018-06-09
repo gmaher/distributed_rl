@@ -39,3 +39,44 @@ class QLearning(Optimizer):
 
     def log(self):
         return "QLearning: q_min = {}, q_max = {}".format(np.amin(self.q), np.amax(self.q))
+
+class NaiveThompsonQ(Optimizer):
+    def __init__(self, mu_init, std_init, num_states, num_actions,
+        std_explore, learning_rate=1e-3, discount=0.99):
+
+        self.num_states    = num_states
+        self.num_actions   = num_actions
+        self.learning_rate = learning_rate
+        self.discount      = discount
+
+        self.q = np.random.rand(num_states, num_actions)*std_init + mu_init
+
+        self.std_explore = np.ones(self.q.shape)*std_explore
+
+    def update(self, batch):
+        batch_size = batch[0].shape[0]
+
+        for i in range(batch_size):
+            s     = batch[0][i]
+            a     = batch[1][i]
+            r     = batch[2][i]
+            ss    = batch[3][i]
+            done  = batch[4][i]
+
+            new_q = r + int(not done)*self.discount*np.max(self.q[ss])
+
+            self.q[s,a] =\
+             (1-self.learning_rate)*self.q[s, a]+\
+                self.learning_rate*new_q
+
+            self.std_explore[s,a] *= (1-self.learning_rate)
+
+    def get_params(self):
+        return self.q.copy()+np.random.randn(self.num_states,\
+            self.num_actions)*self.std_explore
+
+    def log(self):
+        return "QLearning: q_min = {}, q_max = {}\n std min = {},\
+            std max ={}".format(np.amin(self.q), np.amax(self.q),
+                np.amin(self.std_explore), np.amax(self.std_explore)
+                )
