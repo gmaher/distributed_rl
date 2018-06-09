@@ -1,6 +1,14 @@
 import numpy as np
 from src.preprocessor import TablePreprocessor
 
+class Agent(object):
+    def __init__(self):
+        pass
+    def act(self, s):
+        pass
+    def finish_episode(self):
+        pass
+
 class TabularQFunction:
     def __init__(self, state_size, num_actions,
         mu_init=10, std_init=1e-2):
