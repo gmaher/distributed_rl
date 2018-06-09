@@ -28,10 +28,14 @@ class QLearning(Optimizer):
             ss    = batch[3][i]
             done  = batch[4][i]
 
-            new_q = reward + int(not done)*discount*np.max(self.q[ss])
+            new_q = reward + int(not done)*self.discount*np.max(self.q[ss])
 
             self.q[s,a] =\
-             (1-learning_rate)*self.q[s, a]+learning_rate*new_q
+             (1-self.learning_rate)*self.q[s, a]+\
+                self.learning_rate*new_q
 
     def get_params(self):
         return self.q.copy()
+
+    def log(self):
+        return "QLearning: q_min = {}, q_max = {}".format(np.amin(self.q), np.amax(self.q))

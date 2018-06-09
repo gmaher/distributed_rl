@@ -27,20 +27,12 @@ class LearnerThread(threading.Thread):
             if len(self.replay_buffer.tuples) > self.config.BATCH_SIZE:
                 tuples = self.replay_buffer.get(batch_size=self.config.BATCH_SIZE)
 
-                for i in range(self.config.BATCH_SIZE):
-                    s = tuples[0][i]
-                    a = tuples[1][i]
-                    r = tuples[2][i]
-                    ss = tuples[3][i]
-                    done = tuples[4][i]
-
-                    self.agent.update(s,a,r,ss, done, self.config.LEARNING_RATE,
-                            self.config.DISCOUNT)
+                self.agent.update(tuples)
 
             if count%self.config.PRINT_FREQUENCY == 0:
                 logging.debug("training iteration {}".format(count))
 
-                logging.debug("min Q {}, max Q {}".format(np.amin(self.agent.q),np.amax(self.agent.q)))
+                logging.debug(self.agent.log())
 
             time.sleep(random.random()*self.config.SLEEP_TIME_LEARNER)
 

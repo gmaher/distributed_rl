@@ -14,9 +14,9 @@ import numpy as np
 import importlib
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-env', type=str)
-parser.add_argument('-agent', type=str)
-parser.add_argument('-factory', type=str)
+parser.add_argument('-env',       type=str)
+parser.add_argument('-agent',     type=str)
+parser.add_argument('-factory',   type=str)
 parser.add_argument('--n_agents', type=int, default=1)
 args = parser.parse_args()
 
@@ -30,19 +30,21 @@ agent_input = read_json(args.agent)
 # build agent
 #######################################
 factory = importlib.import_module(args.factory)
+factory.setup(agent_input, env_input, config)
 
-learner = factory.get_learner(agent_input, env_input)
+learner = factory.get_learner()
 
 replay = ReplayBuffer(max_size=config.REPLAY_SIZE)
 
 case_id = str(np.random.randint(10000000))
 print("Starting experiment {}".format(case_id))
+
 for i in range(args.n_agents):
     id_ = str(i)
 
     env = get_environment(env_input)
 
-    agent = factory.get_agent(agent_input, env_input)
+    agent = factory.get_agent()
 
     writer = EpisodeWriter(config.resultsDir, env_name=env_input['ENV_NAME'],
         agent_name=agent_input["TYPE"]+case_id, id_=id_)
