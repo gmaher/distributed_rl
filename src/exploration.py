@@ -1,6 +1,6 @@
 import numpy as np
 
-class EpsGreedy(object):
+class EpsilonGreedy(object):
     def __init__(self,num_actions,eps=0.5,eps_min=0.05,decay=0.995):
         self.num_actions = num_actions
         self.eps         = eps

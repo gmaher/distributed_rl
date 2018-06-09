@@ -18,7 +18,6 @@ class LearnerThread(threading.Thread):
         self.agent         = agent
         self.replay_buffer = replay_buffer
         self.config        = config
-        #self.setDaemon(True)
 
     def run(self):
         count = 0
@@ -40,9 +39,9 @@ class LearnerThread(threading.Thread):
 
             if count%self.config.PRINT_FREQUENCY == 0:
                 logging.debug("training iteration {}".format(count))
-                #logging.debug("mean std: {}".format(np.sqrt(np.mean((self.agent.std_explore)))))
+
                 logging.debug("min Q {}, max Q {}".format(np.amin(self.agent.q),np.amax(self.agent.q)))
-                #logging.debug("min std {}, max std {}".format(np.amin(self.agent.std_explore),np.amax(self.agent.std_explore)))
+
             time.sleep(random.random()*self.config.SLEEP_TIME_LEARNER)
 
         return

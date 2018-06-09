@@ -3,4 +3,4 @@ class ParameterServer(object):
         self.learner_agent = learner_agent
 
     def getParams(self):
-        return self.learner_agent.sampleParams()
+        return self.learner_agent.get_params()
