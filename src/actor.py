@@ -26,7 +26,6 @@ class ActorThread(threading.Thread):
         self.writer           = writer
         self.config           = config
         self.out_count        = 0
-        #self.setDaemon(True)
 
     def run(self):
         count = -1
@@ -47,9 +46,6 @@ class ActorThread(threading.Thread):
 
                 a = self.agent.act(s)
 
-                if not self.explorer == None:
-                    a = self.explorer.explore(a)
-
                 ss,r,done,info = self.env.step(a)
 
                 self.replay_buffer.add((s,a,r,ss,done))
@@ -67,12 +63,8 @@ class ActorThread(threading.Thread):
             if count%self.config.PRINT_FREQUENCY == 0:
                 logging.debug("episode {}: final state {}, reward {}".format(count, s, r))
 
-            if not self.explorer == None:
-                self.explorer.update()
+            self.agent.finish_episode()
 
-            new_params = self.parameter_server.getParams()
-
-            self.agent.setParams(new_params)
             self.out_count = count
             time.sleep(random.random()*self.config.SLEEP_TIME)
 

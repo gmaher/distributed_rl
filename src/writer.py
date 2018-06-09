@@ -19,6 +19,7 @@ def convert(x):
             return float(x)
 
     return x
+    
 class EpisodeWriter(object):
     def __init__(self, top_dir, env_name, agent_name, id_):
         self.top_dir       = top_dir
@@ -39,7 +40,7 @@ class EpisodeWriter(object):
 
         if not os.path.isdir(self.output_dir):
             os.mkdir(self.output_dir)
-            
+
     def make_episode_dir(self, episode_id):
         d = "{}/{}".format(self.output_dir,episode_id)
         if not os.path.isdir(d):

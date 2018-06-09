@@ -11,10 +11,12 @@ from src.learner import LearnerThread
 from src.writer import EpisodeWriter
 from src.parameter_server import ParameterServer
 import numpy as np
+import importlib
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-env', type=str)
 parser.add_argument('-agent', type=str)
+parser.add_argument('-factory', type=str)
 parser.add_argument('--n_agents', type=int, default=1)
 args = parser.parse_args()
 
@@ -25,20 +27,11 @@ env_input   = read_json(args.env)
 agent_input = read_json(args.agent)
 
 #######################################
-# Set up simulation
+# build agent
 #######################################
-if "EXPLORER" in agent_input and agent_input['EXPLORER'] == 'EPS_GREEDY':
+factory = importlib.import_module(args.factory)
 
-    explorer = EpsGreedy(num_actions=env_input['NUM_ACTIONS'],
-        eps=config.EPS_START, eps_min=config.EPS_MIN,
-            decay=config.DECAY)
-
-else:
-    explorer = None
-
-learner_agent = get_agent(agent_input, env_input)
-print(learner_agent.q)
-parameter_server = ParameterServer(learner_agent)
+learner = factory.get_learner(agent_input, env_input)
 
 replay = ReplayBuffer(max_size=config.REPLAY_SIZE)
 
@@ -49,24 +42,25 @@ for i in range(args.n_agents):
 
     env = get_environment(env_input)
 
-    actor_agent = get_agent(agent_input, env_input)
+    agent = factory.get_agent(agent_input, env_input)
 
     writer = EpisodeWriter(config.resultsDir, env_name=env_input['ENV_NAME'],
         agent_name=agent_input["TYPE"]+case_id, id_=id_)
 
-    actor  = ActorThread(actor_agent, env, replay, parameter_server,
-        writer, config, explorer, name=id_)
+    actor_thread  = ActorThread(agent, env, replay,
+        writer, config, name=id_)
+
     actor.daemon = True
 
     actor.start()
 
-learner = LearnerThread(learner_agent, replay, config, name="learner")
-learner.daemon = True
-learner.start()
+learner_thread = LearnerThread(learner, replay, config, name="learner")
+learner_thread.daemon = True
+learner_thread.start()
 
 while True:
-    print("checking if done: {}".format(actor.out_count))
-    if actor.out_count >= config.NUM_EPISODES-1:
+    print("checking if done: {}".format(actor_thread.out_count))
+    if actor_thread.out_count >= config.NUM_EPISODES-1:
         time.sleep(10)
         exit()
     time.sleep(10)

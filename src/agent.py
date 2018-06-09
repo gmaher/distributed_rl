@@ -8,6 +8,8 @@ class Agent(object):
         pass
     def finish_episode(self):
         pass
+    def log(self):
+        pass
 
 class TabularQFunction:
     def __init__(self, state_size, num_actions,
