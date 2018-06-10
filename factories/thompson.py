@@ -1,4 +1,4 @@
-from src.optimizer        import NaiveThompsonQ
+from src.optimizer        import NaiveThompsonQ, ThompsonQMax
 from src.model            import TabularQFunction
 from src.parameter_server import ParameterServer
 
@@ -24,7 +24,7 @@ def setup(agent_params, env_params, config):
     NUM_STATES  = env_params['STATE_SIZE' ][0]
     NUM_ACTIONS = env_params['NUM_ACTIONS']
 
-    thompson = NaiveThompsonQ(agent_params['Q_INIT'], agent_params['Q_STD'],
+    thompson = ThompsonQMax(agent_params['Q_INIT'], agent_params['Q_STD'],
         NUM_STATES, NUM_ACTIONS,
         agent_params['STD_EXPLORE'], config.LEARNING_RATE, config.DISCOUNT)
 
