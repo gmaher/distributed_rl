@@ -24,7 +24,7 @@ class LearnerThread(threading.Thread):
         while True:
             count+=1
 
-            if len(self.replay_buffer.tuples) > self.config.BATCH_SIZE:
+            if self.replay_buffer.count > self.config.BATCH_SIZE:
                 tuples = self.replay_buffer.get(batch_size=self.config.BATCH_SIZE)
 
                 self.agent.update(tuples)

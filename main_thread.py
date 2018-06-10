@@ -3,7 +3,7 @@ import time
 from config import config
 from src.util import read_json
 from src.environment import get_environment
-from src.replay_buffer import ReplayBuffer
+from src.replay_buffer import ReplayBuffer, UniformReplayBuffer
 from src.actor import ActorThread
 from src.learner import LearnerThread
 from src.writer import EpisodeWriter
@@ -31,7 +31,7 @@ factory.setup(agent_input, env_input, config)
 
 learner = factory.methods['get_learner']()
 
-replay = ReplayBuffer(max_size=config.REPLAY_SIZE)
+replay = UniformReplayBuffer(max_size=config.REPLAY_SIZE)
 
 case_id = str(np.random.randint(10000000))
 print("Starting experiment {}".format(case_id))

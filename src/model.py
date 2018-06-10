@@ -14,6 +14,6 @@ class TabularQFunction(Model):
 
     def predict(self, s):
         return np.argmax(self.q[s])
-
+        #return 0
     def set_params(self, q):
         self.q = q.copy()

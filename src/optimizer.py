@@ -126,7 +126,7 @@ class ThompsonQMax(Optimizer):
 
     def get_params(self):
         std_bound = 0.5*(self.Qmax-self.Qmin)
-        c_1 = (self.learning_rate**4)**self.counts
+        c_1 = (self.learning_rate)**self.counts
 
         final_std = c_1*std_bound + (1-c_1)*self.std_explore
 
