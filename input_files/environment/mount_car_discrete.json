@@ -1,8 +1,0 @@
-{
-  "PROVIDER":"GYM",
-  "ENV_NAME":"MountainCar-v0",
-  "STATE_RANGES":[[-1.4,0.8],
-    [-0.1,0.1]
-],
-  "NUM_ACTIONS":3
-}

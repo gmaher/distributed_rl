@@ -1,0 +1,22 @@
+{
+  "TYPE":"TabularQFunction",
+  "Q_INIT":0.0,
+  "Q_STD":1e-3,
+  "EXPLORER":"EPS_GREEDY",
+
+  "REPLAY_TYPE":"uniform",
+
+  "PROVIDER":"GYM",
+  "ENV_NAME":"FrozenLake-v0",
+  "STATE_SIZE":[16],
+  "NUM_ACTIONS":4,
+
+  "ENV_PARAMS":{
+    "map_name":"4x4",
+    "is_slippery":true
+  },
+
+  "N_AGENTS":10,
+  "OUTPUT_DIR":"./results/eps_fl_uniform_10",
+  "FACTORY":"factories.epsilon_greedy"
+}

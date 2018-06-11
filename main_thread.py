@@ -29,14 +29,14 @@ learner = factory.methods['get_learner']()
 
 replay = factory.methods['get_replay']()
 
-for i in range(args.n_agents):
+for i in range(input_file['N_AGENTS']):
     id_ = str(i)
 
-    env = get_environment(env_input)
+    env = get_environment(input_file)
 
     agent = factory.methods['get_agent']()
 
-    writer = EpisodeWriter(input_file['output_dir'], id_=id_)
+    writer = EpisodeWriter(input_file['OUTPUT_DIR'], id_=id_)
 
     actor_thread  = ActorThread(agent, env, replay,
         writer, config, name=id_)

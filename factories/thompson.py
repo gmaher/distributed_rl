@@ -1,7 +1,7 @@
 from src.optimizer        import NaiveThompsonQ, ThompsonQMax
 from src.model            import TabularQFunction
 from src.parameter_server import ParameterServer
-
+from src.replay_buffer    import ReplayBuffer, UniformReplayBuffer
 ############################################
 # Setup
 ############################################
@@ -20,15 +20,25 @@ class ThompsonAgent(object):
     def act(self, s):
         return self.model.predict(s)
 
-def setup(agent_params, env_params, config):
-    NUM_STATES  = env_params['STATE_SIZE' ][0]
-    NUM_ACTIONS = env_params['NUM_ACTIONS']
+def setup(input_file, config):
+    NUM_STATES  = input_file['STATE_SIZE' ][0]
+    NUM_ACTIONS = input_file['NUM_ACTIONS']
 
-    thompson = ThompsonQMax(agent_params['Q_INIT'], agent_params['Q_STD'],
+    thompson = ThompsonQMax(input_file['Q_INIT'], input_file['Q_STD'],
         NUM_STATES, NUM_ACTIONS,
-        agent_params['STD_EXPLORE'], config.LEARNING_RATE, config.DISCOUNT)
+        input_file['STD_EXPLORE'], config.LEARNING_RATE, config.DISCOUNT)
 
     param_server = ParameterServer(thompson)
+
+    if input_file['REPLAY_TYPE'] == "standard":
+        replay_buffer = ReplayBuffer()
+
+    elif input_file['REPLAY_TYPE'] == 'uniform':
+        replay_buffer = UniformReplayBuffer()
+
+    else:
+        raise RuntimeError("Unrecognized replay type {}".format(input_file['REPLAY_TYPE']))
+
 
     def agent():
         q_function = TabularQFunction( thompson.get_params() )
@@ -38,5 +48,9 @@ def setup(agent_params, env_params, config):
     def learner():
         return thompson
 
+    def replay():
+        return replay_buffer
+
     methods['get_agent']   = agent
     methods['get_learner'] = learner
+    methods['get_replay']  = replay

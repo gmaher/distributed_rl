@@ -1,0 +1,17 @@
+{
+  "TYPE":"TabularQFunction",
+  "Q_INIT":0.0,
+  "Q_STD":1e-3,
+  "EXPLORER":"EPS_GREEDY",
+
+  "REPLAY_TYPE":"uniform",
+
+  "PROVIDER":"GYM",
+  "ENV_NAME":"NChain-v0",
+  "STATE_SIZE":[5],
+  "NUM_ACTIONS":2,
+
+  "N_AGENTS":1,
+  "OUTPUT_DIR":"./results/eps_nchain_uniform_1",
+  "FACTORY":"factories.epsilon_greedy"
+}

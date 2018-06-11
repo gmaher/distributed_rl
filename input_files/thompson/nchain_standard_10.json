@@ -1,0 +1,17 @@
+{
+  "TYPE":"TabularQFunction",
+  "Q_INIT":0.0,
+  "Q_STD":1e-3,
+  "STD_EXPLORE":1,
+
+  "REPLAY_TYPE":"standard",
+
+  "PROVIDER":"GYM",
+  "ENV_NAME":"NChain-v0",
+  "STATE_SIZE":[5],
+  "NUM_ACTIONS":2,
+
+  "N_AGENTS":10,
+  "OUTPUT_DIR":"./results/thompson_nchain_standard_10",
+  "FACTORY":"factories.thompson"
+}
