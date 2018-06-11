@@ -11,30 +11,23 @@ import numpy as np
 import importlib
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-env',       type=str)
-parser.add_argument('-agent',     type=str)
-parser.add_argument('-factory',   type=str)
-parser.add_argument('--n_agents', type=int, default=1)
+parser.add_argument('-input',type=str)
 args = parser.parse_args()
 
 #######################################
 # Read inputs
 #######################################
-env_input   = read_json(args.env)
-agent_input = read_json(args.agent)
+input_file   = read_json(args.input)
 
 #######################################
 # build agent
 #######################################
-factory = importlib.import_module(args.factory)
-factory.setup(agent_input, env_input, config)
+factory = importlib.import_module(input_file['FACTORY'])
+factory.setup(input_file, config)
 
 learner = factory.methods['get_learner']()
 
-replay = UniformReplayBuffer(max_size=config.REPLAY_SIZE)
-
-case_id = str(np.random.randint(10000000))
-print("Starting experiment {}".format(case_id))
+replay = factory.methods['get_replay']()
 
 for i in range(args.n_agents):
     id_ = str(i)
@@ -43,8 +36,7 @@ for i in range(args.n_agents):
 
     agent = factory.methods['get_agent']()
 
-    writer = EpisodeWriter(config.resultsDir, env_name=env_input['ENV_NAME'],
-        agent_name=agent_input["TYPE"]+case_id, id_=id_)
+    writer = EpisodeWriter(input_file['output_dir'], id_=id_)
 
     actor_thread  = ActorThread(agent, env, replay,
         writer, config, name=id_)

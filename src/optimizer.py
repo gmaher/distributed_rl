@@ -111,9 +111,7 @@ class ThompsonQMax(Optimizer):
 
             new_q = r + int(not done)*self.discount*np.max(self.q[ss])
 
-            self.std_explore[s,a] =\
-                np.sqrt((1-self.learning_rate)*self.std_explore[s,a]**2 +\
-                    self.learning_rate*(new_q-self.q[s,a])**2)
+            self.std_explore[s,a] *= self.learning_rate
 
             self.q[s,a] =\
              (1-self.learning_rate)*self.q[s, a]+\

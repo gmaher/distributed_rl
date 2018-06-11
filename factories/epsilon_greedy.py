@@ -2,6 +2,7 @@ from src.exploration      import EpsilonGreedy
 from src.optimizer        import QLearning
 from src.model            import TabularQFunction
 from src.parameter_server import ParameterServer
+from src.replay_buffer    import ReplayBuffer, UniformReplayBuffer
 
 ############################################
 # Setup
@@ -25,15 +26,24 @@ class EpsGreedyAgent(object):
         a = self.model.predict(s)
         return self.explorer.explore(a)
 
-def setup(agent_params, env_params, config):
-    NUM_STATES  = env_params['STATE_SIZE' ][0]
-    NUM_ACTIONS = env_params['NUM_ACTIONS']
+def setup(input_file, config):
+    NUM_STATES  = input_file['STATE_SIZE' ][0]
+    NUM_ACTIONS = input_file['NUM_ACTIONS']
 
-    q_learning = QLearning(agent_params['Q_INIT'], agent_params['Q_STD'],
+    q_learning = QLearning(input_file['Q_INIT'], input_file['Q_STD'],
         NUM_STATES, NUM_ACTIONS,
         config.LEARNING_RATE, config.DISCOUNT)
 
     param_server = ParameterServer(q_learning)
+
+    if input_file['REPLAY_TYPE'] == "standard":
+        replay_buffer = ReplayBuffer()
+
+    elif input_file['REPLAY_TYPE'] == 'uniform':
+        replay_buffer = UniformReplayBuffer()
+
+    else:
+        raise RuntimeError("Unrecognized replay type {}".format(input_file['REPLAY_TYPE']))
 
     def agent():
         q_function = TabularQFunction( q_learning.get_params() )
@@ -46,5 +56,9 @@ def setup(agent_params, env_params, config):
     def learner():
         return q_learning
 
+    def replay():
+        return replay_buffer
+
     methods['get_agent']   = agent
     methods['get_learner'] = learner
+    methods['get_replay']  = replay
