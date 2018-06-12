@@ -1,26 +1,21 @@
 #!/bin/bash
 
-py3 run.py -env ./input_files/environment/frozen_lake.json\
- -agent ./input_files/agent/thompson_tabular_q.json
+python main_thread.py -input ./input_files/epsilon_greedy/frozenlake_standard_1.json
+python main_thread.py -input ./input_files/epsilon_greedy/frozenlake_standard_10.json
+python main_thread.py -input ./input_files/epsilon_greedy/frozenlake_uniform_1.json
+python main_thread.py -input ./input_files/epsilon_greedy/frozenlake_uniform_10.json
 
-py3 run.py -env ./input_files/environment/frozen_lake.json\
- -agent ./input_files/agent/tabular_q.json
+python main_thread.py -input ./input_files/epsilon_greedy/nchain_standard_1.json
+python main_thread.py -input ./input_files/epsilon_greedy/nchain_standard_10.json
+python main_thread.py -input ./input_files/epsilon_greedy/nchain_uniform_1.json
+python main_thread.py -input ./input_files/epsilon_greedy/nchain_uniform_10.json
 
-py3 run.py -env ./input_files/environment/frozen_lake.json\
- -agent ./input_files/agent/thompson_tabular_q.json --n_agents 10
+python main_thread.py -input ./input_files/thompson/frozenlake_standard_1.json
+python main_thread.py -input ./input_files/thompson/frozenlake_standard_10.json
+python main_thread.py -input ./input_files/thompson/frozenlake_uniform_1.json
+python main_thread.py -input ./input_files/thompson/frozenlake_uniform_10.json
 
-py3 run.py -env ./input_files/environment/frozen_lake.json\
- -agent ./input_files/agent/tabular_q.json --n_agents 10
-
-#Nchain
-py3 run.py -env ./input_files/environment/nchain.json\
- -agent ./input_files/agent/thompson_tabular_q.json
-
-py3 run.py -env ./input_files/environment/nchain.json\
-  -agent ./input_files/agent/tabular_q.json
-
-py3 run.py -env ./input_files/environment/nchain.json\
- -agent ./input_files/agent/thompson_tabular_q.json --n_agents 10
-
-py3 run.py -env ./input_files/environment/nchain.json\
- -agent ./input_files/agent/tabular_q.json --n_agents 10
+python main_thread.py -input ./input_files/thompson/nchain_standard_1.json
+python main_thread.py -input ./input_files/thompson/nchain_standard_10.json
+python main_thread.py -input ./input_files/thompson/nchain_uniform_1.json
+python main_thread.py -input ./input_files/thompson/nchain_uniform_10.json

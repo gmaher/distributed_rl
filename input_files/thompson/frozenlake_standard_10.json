@@ -16,7 +16,7 @@
     "is_slippery":true
   },
 
-  "N_AGENTS":1,
+  "N_AGENTS":10,
   "OUTPUT_DIR":"./results/thompson_fl_standard_10",
   "FACTORY":"factories.thompson"
 }
