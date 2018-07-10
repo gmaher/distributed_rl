@@ -9,23 +9,25 @@ def handler_wrapper(args_to_use, func, packer=do_nothing):
         for arg in args_to_use:
             if arg=="node":
                 args_dict[arg]=node
+            elif arg=="header":
+                args_dict[arg]=msg['header']
             else:
-                args_dict[arg]=msg[arg]
+                args_dict[arg]=msg['data'][arg]
 
         data = func(**args_dict)
 
-        
+        return packer(data)
+
     return handler
 
 class Node(object):
     def __init__(self, communicator, sleep_time=0.1):
         self.communicator = communicator
-        self.serializer   = serializer
         self.sleep_time   = sleep_time
 
         self.msg_handlers = {}
 
-    def add_handler(topic, handler, response_topic=""):
+    def add_handler(self, topic, handler, response_topic=""):
         self.msg_handlers[topic] = {
         "handler":handler,
         "response_topic":response_topic
@@ -33,18 +35,21 @@ class Node(object):
 
     def execute(self):
         msg = self.communicator.get_message()
+        print("got message {}".format(msg))
         if msg == None:
             time.sleep(self.sleep_time)
             return
 
-        if not "subject" in msg:
-            print("Received message without subject")
+        if not "topic" in msg['header']:
+            print("Received message without topic")
             return
 
-        if not msg['topic'] in self.msg_handlers: return
+        topic = msg['header']['topic']
 
-        data = self.msg_handlers[msg.topic]['handler'](message=msg, node=self)
-        response_topic = self.msg_handlers[msg.topic]['response_topic']
+        if not topic in self.msg_handlers: return
+
+        data = self.msg_handlers[topic]['handler'](message=msg, node=self)
+        response_topic = self.msg_handlers[topic]['response_topic']
 
         if data == None: return
 

@@ -1,5 +1,7 @@
 import socket
 from queue import Queue
+import threading
+import time
 
 class Threaded(threading.Thread):
     def __init__(self, sleep_time, group=None, target=None, name="threaded",
@@ -12,49 +14,68 @@ class Threaded(threading.Thread):
     def run(self):
         while True:
             self.execute()
-            time.sleep(self.timeout)
+            time.sleep(self.sleep_time)
         return
 
     def execute(self):
         raise RuntimeError("Abstract not implemented")
 
 class UDP(Threaded):
-    def setup(self, address, port, serializer, buffer_size=1024, queue_size=200):
+    def setup(self, address, port, serializer, timeout=0.5, buffer_size=1024, queue_size=200):
         self.address     = address
         self.port        = port
         self.serializer  = serializer
         self.buffer_size = buffer_size
-        self.peers       = []
+        self.peers       = {}
+        self.timeout     = timeout
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.settimeout(self.timeout)
 
-        self.socket.bind((self.host,self.port))
+        self.socket.bind((self.address,self.port))
 
         self.received_messages = Queue(maxsize=queue_size)
-        self.outgoing_mesasges = Queue(maxsize=queue_size)
+        self.outgoing_messages = Queue(maxsize=queue_size)
 
-    def add_peer(self,peer):
-        self.peers.append(peer)
+    def add_peer(self,peer, topic=""):
+        if not topic in self.peers:
+            self.peers[topic] = []
+
+        self.peers[topic].append(peer)
 
     def execute(self):
-        d = self.socket.recvfrom(self.buffer_size)
-        data = d[0]
-        addr = d[1]
-        if not (data == None):
+        try:
+            d = self.socket.recvfrom(self.buffer_size)
+            print(d)
+            data = d[0].decode()
+            addr = d[1]
+            print(data)
             msg = self.serializer.deserialize(data)
+            print(type(msg))
             self.received_messages.put(msg)
+            print("queue size: ", self.received_messages.qsize())
+        except:
+            print("no incoming messages")
 
-        if not self.outgoing_mesasges.empty():
-            o_msg = self.outgoing_mesasges.get()
-            o_msg = self.serializer.serialize(o_msg)
-            o_msg = o_msg.encode()
+        if not self.outgoing_messages.empty():
+            o_msg = self.outgoing_messages.get()
+            o_msg_b = self.serializer.serialize(o_msg)
+            o_msg_b = o_msg_b.encode()
 
-            for p in self.peers:
-                self.socket.sendto(m,p)
+            for p in self.peers[o_msg['header']['topic']]:
+                self.socket.sendto(o_msg_b,p)
 
     def get_message(self):
+        print("getting received messages")
         if self.received_messages.empty(): return None
         return self.received_messages.get()
 
     def send_message(self, data, topic):
-        
+        msg = {}
+        msg['header'] = {}
+        msg['header']['from']  = "{}:{}".format(self.address,self.port)
+        msg['header']['topic'] = topic
+
+        msg['data'] = data
+
+        self.outgoing_messages.put(msg)
