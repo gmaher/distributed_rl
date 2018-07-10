@@ -46,14 +46,12 @@ class UDP(Threaded):
     def execute(self):
         try:
             d = self.socket.recvfrom(self.buffer_size)
-            print(d)
             data = d[0].decode()
             addr = d[1]
-            print(data)
+
             msg = self.serializer.deserialize(data)
-            print(type(msg))
+
             self.received_messages.put(msg)
-            print("queue size: ", self.received_messages.qsize())
         except:
             print("no incoming messages")
 
@@ -66,7 +64,6 @@ class UDP(Threaded):
                 self.socket.sendto(o_msg_b,p)
 
     def get_message(self):
-        print("getting received messages")
         if self.received_messages.empty(): return None
         return self.received_messages.get()
 

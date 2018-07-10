@@ -5,5 +5,4 @@ class JSONSerializer(object):
         return json.dumps(obj)
 
     def deserialize(self, string):
-        print(type(string),string)
         return json.loads(string)

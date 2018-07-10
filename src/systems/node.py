@@ -3,10 +3,13 @@ import time
 def do_nothing(x):
     return x
 
-def handler_wrapper(args_to_use, func, packer=do_nothing):
-    def handler(msg,node):
+def handler_wrapper(args_dict, func, packer=do_nothing):
+    """
+    args_to_use - dict - message arg -> func arg
+    """
+    def handler(message,node):
         args_dict = {}
-        for arg in args_to_use:
+        for arg in args_dict:
             if arg=="node":
                 args_dict[arg]=node
             elif arg=="header":
@@ -35,7 +38,6 @@ class Node(object):
 
     def execute(self):
         msg = self.communicator.get_message()
-        print("got message {}".format(msg))
         if msg == None:
             time.sleep(self.sleep_time)
             return
@@ -49,8 +51,9 @@ class Node(object):
         if not topic in self.msg_handlers: return
 
         data = self.msg_handlers[topic]['handler'](message=msg, node=self)
+
         response_topic = self.msg_handlers[topic]['response_topic']
 
         if data == None: return
 
-        self.broadcaster.send_message(data, response_topic)
+        self.communicator.send_message(data, response_topic)
