@@ -28,13 +28,14 @@ class UDP(Threaded):
         self.buffer_size = buffer_size
         self.peers       = {}
         self.timeout     = timeout
+        self.queue_size  = queue_size
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.settimeout(self.timeout)
 
         self.socket.bind((self.address,self.port))
 
-        self.received_messages = Queue(maxsize=queue_size)
+        self.received_messages = {}
         self.outgoing_messages = Queue(maxsize=queue_size)
 
     def add_peer(self,peer, topic=""):
@@ -42,6 +43,9 @@ class UDP(Threaded):
             self.peers[topic] = []
 
         self.peers[topic].append(peer)
+
+    def subscribe(self,topic):
+        self.received_messages[topic] = Queue(maxsize=self.queue_size)
 
     def execute(self):
         try:
@@ -51,21 +55,29 @@ class UDP(Threaded):
 
             msg = self.serializer.deserialize(data)
 
-            self.received_messages.put(msg)
+            if 'header' in msg:
+                if 'topic' in msg['header']:
+                    if msg['header']['topic'] in self.received_messages:
+                        topic = msg['header']['topic']
+                        self.received_messages[topic].put(msg)
+
         except:
             print("no incoming messages")
 
         if not self.outgoing_messages.empty():
-            o_msg = self.outgoing_messages.get()
+            o_msg   = self.outgoing_messages.get()
             o_msg_b = self.serializer.serialize(o_msg)
             o_msg_b = o_msg_b.encode()
 
             for p in self.peers[o_msg['header']['topic']]:
                 self.socket.sendto(o_msg_b,p)
 
-    def get_message(self):
-        if self.received_messages.empty(): return None
-        return self.received_messages.get()
+    def get_message(self, topic):
+        if topic in self.received_messages:
+            if self.received_messages[topic].empty(): return None
+            return self.received_messages[topic].get()
+
+        return None
 
     def send_message(self, data, topic):
         msg = {}
