@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath('..'))
 
 import time
 
-from src.network import serialize, udp
+from comm import serialize, udp
 
 
 serializer = serialize.JSONSerializer()
