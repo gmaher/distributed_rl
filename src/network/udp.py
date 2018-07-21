@@ -47,6 +47,18 @@ class UDP(Threaded):
     def subscribe(self,topic):
         self.received_messages[topic] = Queue(maxsize=self.queue_size)
 
+    def preprocess_message(self,msg):
+        if "header" in msg:
+            if "topic" in msg['header']:
+                topic = msg['header']['topic']
+
+                if topic == "new_peer":
+
+                if topic == "remove_peer":
+
+                if topic == "heartbeat":
+
+
     def execute(self):
         try:
             d = self.socket.recvfrom(self.buffer_size)
@@ -54,6 +66,8 @@ class UDP(Threaded):
             addr = d[1]
 
             msg = self.serializer.deserialize(data)
+
+            self.preprocess_message(msg)
 
             if 'header' in msg:
                 if 'topic' in msg['header']:
